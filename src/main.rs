@@ -3,18 +3,19 @@ use std::{
     io,
     thread,
     sync::mpsc,
-    time::Duration};
+    time::{Duration, Instant}};
 
 use crossterm::{
     cursor::{Hide, Show},
     event::{self, Event, KeyCode},
     terminal::{self, EnterAlternateScreen, LeaveAlternateScreen}, 
-    ExecutableCommand
+    ExecutableCommand,
 };
 use rusty_audio::Audio;
 use ss3::{
-    frame,
-    render
+    frame::{self, Drawable},
+    render,
+    player::Player,
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -51,35 +52,38 @@ fn main() -> Result<(), Box<dyn Error>> {
     });
 
     // Gameloop
+    let mut player: Player = Player::new();
+    let mut instant = Instant::now();
     'gameloop: loop {
-        let curr_frame = frame::new_frame();
+        let delta = instant.elapsed();
+        instant = Instant::now();
+        let mut curr_frame: Vec<Vec<&str>> = frame::new_frame();
 
         // Input
         while event::poll(Duration::default())? {
             if let Event::Key(key_event) = event::read()? {
                 match key_event.code {
-                    KeyCode::Char('q') => {
+                    KeyCode::Left => player.move_left(),
+                    KeyCode::Right => player.move_right(),
+                    KeyCode::Char(' ') | KeyCode::Enter => {
+                        if player.shoot() {
+                            audio.play("pew");
+                        }
+                    }
+                    KeyCode::Esc | KeyCode::Char('q') => {
                         audio.play("lose");
                         break 'gameloop;
                     }
-                    // KeyCode::Char('p') => {
-                    //     audio.play("pew");
-                    // }
-                    // KeyCode::Char('m') => {
-                    //     audio.play("move");
-                    // }
-                    // KeyCode::Char('e') => {
-                    //     audio.play("explode");
-                    // }
-                    // KeyCode::Char('w') => {
-                    //     audio.play("win");
-                    // }
                     _ => {}
                 }
             }            
         }
 
+        // Update
+        player.update(delta);
+
         // Draw & render
+        player.draw(&mut curr_frame);
         let _ = render_tx.send(curr_frame)?;
         thread::sleep(Duration::from_millis(1));
     }
