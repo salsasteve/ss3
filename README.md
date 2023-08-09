@@ -14,7 +14,7 @@ Kamehameha of Code: Crafted in Rust, ss3 is fast, resilient, and ready for your 
 Training Ground for Hackers: Your terminal is now your training ground. Are you ready to reach new heights?
 Get Started:
 
-Summon the energy: git clone https://github.com/yourusername/ss3.git
+Summon the energy: git clone https://github.com/salsasteve/ss3.git
 Enter the Hyperbolic Time Chamber: cd ss3
 Compile with the force of a Saiyan: cargo build --release
 Blast the beats: ./target/release/ss3 path/to/yourfile.mp3
