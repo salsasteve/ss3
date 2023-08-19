@@ -51,9 +51,10 @@ fn main() {
 }
 ```
 
-### Wiki credits:
+### Good Resources:
 - [Mp3filestructure.svg](https://en.wikipedia.org/wiki/MP3#/media/File:Mp3filestructure.svg)
 - [Wiki](https://en.wikipedia.org/wiki/MP3)
+- [Audio Prossesing for Dummies](https://adventures.michaelfbryan.com/posts/audio-processing-for-dummies/)
 
 
 This example shows how to load and decode an MP3 file with Rodio in Rust. From here, you can apply various analysis techniques like Fourier Transform to study the audio spectrum.
